@@ -68,7 +68,7 @@ def fake_service(request: httpx.Request) -> httpx.Response:
             },
         )
     if path == "/api/voice-preview":
-        assert json.loads(request.content) == {"text": "Cześć!", "voice": "gosia"}
+        assert json.loads(request.content) == {"text": "Cześć!", "voice": "sophie"}
         return httpx.Response(
             200,
             json={
@@ -109,7 +109,7 @@ async def test_real_sdk_lists_all_tools_and_input_schemas(server):
     assert set(tools) == TOOL_NAMES
     assert tools["receive_voice_messages"].input_schema["properties"]["after_id"]["default"] == 0
     assert tools["send_voice_message"].input_schema["required"] == ["agent_id", "text"]
-    assert tools["synthesize_speech"].input_schema["properties"]["voice"]["default"] == "gosia"
+    assert tools["synthesize_speech"].input_schema["properties"]["voice"]["default"] == "sophie"
     assert tools["list_conversations"].annotations.read_only_hint is True
 
 

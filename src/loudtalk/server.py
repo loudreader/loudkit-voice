@@ -30,7 +30,7 @@ class AgentConfig(BaseModel):
     kind: Literal["inbox", "openai", "webhook", "command"] = "inbox"
     endpoint: str = Field(default="", max_length=2000)
     model: str = Field(default="", max_length=200)
-    voice: str = "gosia"
+    voice: str = "sophie"
     color: str = Field(default="#eb7256", pattern=r"^#[0-9a-fA-F]{6}$")
     api_key: str = Field(default="", max_length=4096)
     command_id: str = ""
@@ -69,12 +69,12 @@ class AgentMessageInput(MessageInput):
 
 class SpeechInput(BaseModel):
     text: str = Field(min_length=1, max_length=12000)
-    voice: str = "gosia"
+    voice: str = "sophie"
 
 
 class OpenAISpeechInput(BaseModel):
     input: str = Field(min_length=1, max_length=12000)
-    voice: str = "gosia"
+    voice: str = "sophie"
     model: str = "loudkit"
     response_format: Literal["mp3", "opus", "aac", "flac", "wav", "pcm"] = "mp3"
     speed: float = Field(default=1.0, ge=0.5, le=2.0)

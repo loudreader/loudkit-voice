@@ -47,7 +47,7 @@ class Store:
                     "id": "hermes",
                     "name": "Hermes",
                     "kind": "inbox",
-                    "voice": "gosia",
+                    "voice": "sophie",
                     "color": "#eb7256",
                     "endpoint": "",
                     "model": "",

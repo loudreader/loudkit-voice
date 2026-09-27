@@ -10,6 +10,8 @@ import copy
 import json
 from urllib.parse import urlsplit
 
+from .speech import available_voices
+
 DEFAULT_BASE_URL = "http://127.0.0.1:8765/v1"
 LOCAL_API_KEY = "loudtalk-local"
 VERIFIED_AT = "2026-09-22"
@@ -63,19 +65,19 @@ def native_agent_catalog() -> list[dict]:
         {
             "id": "hermes",
             "name": "Hermes",
-            "description": "Dodaj Loudkit i Parakeet do bota, którego już używasz.",
+            "description": "Add Loudkit and Parakeet to the bot you already use.",
             "channels": [
-                _channel("telegram", "voice_note", True, "W czacie włącz /voice on."),
-                _channel("discord", "voice_note", True, "W czacie włącz /voice on."),
+                _channel("telegram", "voice_note", True, "Enable /voice on in your chat."),
+                _channel("discord", "voice_note", True, "Enable /voice on in your chat."),
                 _channel(
                     "whatsapp", "audio_attachment", None,
-                    "Odbiór głosówek i narzędzie TTS. Automatyczne odpowiedzi wymagają "
-                    "sprawdzenia w Twojej wersji Hermes.",
+                    "Voice message input and a TTS tool are available. Check automatic replies "
+                    "in your version of Hermes.",
                 ),
                 _channel(
                     "slack", "audio_attachment", None,
-                    "Odbiór głosówek i narzędzie TTS. Automatyczne odpowiedzi wymagają "
-                    "sprawdzenia w Twojej wersji Hermes.",
+                    "Voice message input and a TTS tool are available. Check automatic replies "
+                    "in your version of Hermes.",
                 ),
             ],
             "verification": "upstream_source",
@@ -84,7 +86,7 @@ def native_agent_catalog() -> list[dict]:
         {
             "id": "openclaw",
             "name": "OpenClaw",
-            "description": "Jeden dostawca głosu dla komunikatorów Twojego OpenClaw.",
+            "description": "One voice provider for your OpenClaw messengers.",
             "channels": [
                 _channel("telegram", "voice_note", True),
                 _channel("whatsapp", "voice_note", True),
@@ -92,8 +94,8 @@ def native_agent_catalog() -> list[dict]:
                 _channel("slack", "audio_attachment", True),
                 _channel(
                     "imessage", "audio_attachment", True,
-                    "Przez już połączony BlueBubbles. Zwykłe auto-TTS wysyła plik audio; "
-                    "natywna notatka głosowa wymaga asVoice w narzędziu BlueBubbles.",
+                    "Requires an existing BlueBubbles connection. Standard auto-TTS sends an audio file; "
+                    "a native voice message requires asVoice in the BlueBubbles tool.",
                 ),
             ],
             "verification": "upstream_source",
@@ -108,7 +110,7 @@ def _validate_base_url(value: str) -> str:
         parsed = urlsplit(url)
         port = parsed.port
     except ValueError as exc:
-        raise ValueError("Podaj poprawny lokalny adres API LoudTalk.") from exc
+        raise ValueError("Enter a valid local Loudkit Voice API address.") from exc
     if (
         parsed.scheme not in {"http", "https"}
         or parsed.hostname not in {"127.0.0.1", "localhost", "::1"}
@@ -121,22 +123,22 @@ def _validate_base_url(value: str) -> str:
         or any(char.isspace() for char in url)
     ):
         raise ValueError(
-            "Użyj lokalnego adresu kończącego się na /v1, np. "
-            "http://127.0.0.1:8765/v1. Agent na innym komputerze potrzebuje tunelu."
+            "Use a local address ending in /v1, such as "
+            "http://127.0.0.1:8765/v1. An agent on another computer needs a tunnel."
         )
     return url
 
 
 def build_native_agent_setup(
-    agent_id: str, voice: str = "gosia", base_url: str = DEFAULT_BASE_URL
+    agent_id: str, voice: str = "sophie", base_url: str = DEFAULT_BASE_URL
 ) -> dict:
     """Build a source-backed, reviewable setup without touching the user's bot."""
-    if voice not in {"gosia", "darkman"}:
-        raise ValueError("Wybierz głos gosia lub darkman.")
+    if voice not in {item["id"] for item in available_voices()}:
+        raise ValueError("Choose an available Loudkit voice.")
     base_url = _validate_base_url(base_url)
     catalog = {entry["id"]: entry for entry in native_agent_catalog()}
     if agent_id not in catalog:
-        raise ValueError("Ten agent nie ma jeszcze gotowego ustawienia dostawcy głosu.")
+        raise ValueError("This agent does not have a voice provider preset yet.")
 
     setup = copy.deepcopy(catalog[agent_id])
     setup.update(
@@ -145,9 +147,9 @@ def build_native_agent_setup(
         connection_status="not_checked",
         topology="existing_agent_voice_provider",
         prerequisites=[
-            "LoudTalk działa, a modele mowy są gotowe.",
-            "Twój agent ma już działające połączenie z wybranym komunikatorem.",
-            "Agent ma dostęp do tego lokalnego adresu; 127.0.0.1 oznacza komputer agenta.",
+            "Loudkit Voice is running and the speech models are ready.",
+            "Your agent already has a working connection to the chosen messenger.",
+            "Your agent can reach this local address; 127.0.0.1 refers to the agent’s computer.",
         ],
     )
     if agent_id == "hermes":
@@ -184,18 +186,18 @@ def build_native_agent_setup(
                 "content": _hermes_yaml(config),
             }],
             steps=[
-                "Dodaj poniższe sekcje stt i tts do konfiguracji aktywnego profilu Hermes. "
-                "Jeśli już istnieją, zmień wskazane pola wewnątrz nich; zachowaj resztę pliku.",
-                "Uruchom ponownie istniejącą bramkę Hermes, aby wczytała dostawcę głosu.",
-                "W swoim czacie Telegram lub Discord wpisz /voice on, a potem nagraj głosówkę.",
+                "Add the stt and tts sections below to the active Hermes profile configuration. "
+                "If they already exist, update those fields and keep the rest of the file.",
+                "Restart your existing Hermes gateway to load the voice provider.",
+                "Enter /voice on in your Telegram or Discord chat, then record a voice message.",
             ],
             chat_commands=["/voice on", "/voice status", "/voice off"],
             notes=[
-                "Hermes odbiera wiadomości i wykonuje polecenia z własną pamięcią, "
-                "narzędziami i uprawnieniami. LoudTalk dostarcza rozpoznawanie i syntezę mowy.",
-                "loudtalk-local to lokalna wartość wymagana przez klienta API, a nie klucz OpenAI.",
-                "W Slack i WhatsApp dostępność automatycznej odpowiedzi głosowej zależy "
-                "od wersji bramki. Sama konfiguracja dostawcy tego nie potwierdza.",
+                "Hermes receives messages and acts with its own memory, "
+                "tools and permissions. Loudkit Voice provides speech recognition and synthesis.",
+                "loudtalk-local is a local placeholder required by the API client, not an OpenAI key.",
+                "Automatic voice replies in Slack and WhatsApp depend "
+                "on your gateway version. Provider configuration alone does not verify support.",
             ],
             sources=copy.deepcopy(HERMES_SOURCES),
         )
@@ -238,26 +240,26 @@ def build_native_agent_setup(
                 "content": json.dumps(config, ensure_ascii=False, indent=2) + "\n",
             }],
             steps=[
-                "Dodaj lokalny profil klucza audio dla każdego agenta odbierającego głosówki: "
-                "openclaw models auth paste-api-key --agent NAZWA_AGENTA --provider openai "
-                "--profile-id openai:loudtalk. W pytaniu o klucz wpisz loudtalk-local.",
-                "Jeśli używasz OpenAI do rozmów, zachowaj jego obecny profil jako pierwszy "
-                "w kolejności uwierzytelniania. Profil openai:loudtalk wybiera tylko wpis audio.",
-                "Połącz poniższy fragment z konfiguracją OpenClaw. Zastąp dotychczasowe "
-                "wpisy modeli audio; zachowaj wpisy obrazu i wideo oraz pozostałe ustawienia.",
-                "Uruchom ponownie istniejącą bramkę OpenClaw, a potem wyślij głosówkę "
-                "w swoim komunikatorze. Ustawienie inbound odpowiada głosem na głosówkę.",
+                "Add a local audio key profile for each agent receiving voice messages: "
+                "openclaw models auth paste-api-key --agent AGENT_NAME --provider openai "
+                "--profile-id openai:loudtalk. Enter loudtalk-local when prompted for the key.",
+                "If you use OpenAI for chat, keep its existing profile first "
+                "in the authentication order. The openai:loudtalk profile applies only to the audio entry.",
+                "Merge the snippet below into your OpenClaw configuration. Replace the existing "
+                "audio model entries; keep image and video entries and all other settings.",
+                "Restart your existing OpenClaw gateway, then send a voice message "
+                "in your messenger. The inbound setting replies to voice messages with audio.",
             ],
             chat_commands=["/tts status", "/tts chat default", "/tts off"],
             notes=[
-                "Konfiguracja jest dla aktualnego OpenClaw: tts znajduje się na głównym "
-                "poziomie, a ustawienia silnika w tts.providers.openai.",
-                "Nie ustawiaj models.providers.openai.apiKey na loudtalk-local: to zmieniłoby "
-                "uwierzytelnianie zwykłych rozmów, a nie tylko audio.",
-                "Na iMessage wymagany jest wcześniej połączony BlueBubbles. Discord, Slack "
-                "i zwykłe auto-TTS iMessage dostają odtwarzalny załącznik audio.",
-                "Zapisane preferencje /tts lub ustawienia głosu konkretnego agenta mogą "
-                "nadpisywać ustawienia globalne. Sprawdź /tts status w danym czacie.",
+                "This configuration uses the current OpenClaw structure: tts is at the top "
+                "level, with engine settings in tts.providers.openai.",
+                "Do not set models.providers.openai.apiKey to loudtalk-local: that would change "
+                "authentication for regular chat, not just audio.",
+                "iMessage requires an existing BlueBubbles connection. Discord, Slack "
+                "and standard iMessage auto-TTS receive a playable audio attachment.",
+                "Saved /tts preferences or agent-specific voice settings may "
+                "override global settings. Check /tts status in that chat.",
             ],
             sources=copy.deepcopy(OPENCLAW_SOURCES),
         )

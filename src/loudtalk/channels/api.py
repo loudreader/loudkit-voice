@@ -99,7 +99,7 @@ class ChannelPatch(ConfigFields):
 
 class NativeSetup(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    voice: StrictStr = Field(default="gosia", max_length=100)
+    voice: StrictStr = Field(default="sophie", max_length=100)
     base_url: StrictStr = Field(default=DEFAULT_BASE_URL, max_length=2000)
 
 

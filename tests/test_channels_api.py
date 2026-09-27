@@ -137,12 +137,14 @@ def test_unknown_settings_and_patch_null_rejected(mounted):
     assert client.patch(path, json={"platform": "telegram"}).status_code == 422
 
 
-def test_native_setup_is_generated_without_account_access(mounted):
+@pytest.mark.parametrize("voice, expected_voice", [(None, "sophie"), ("sophie", "sophie"), ("gosia", "gosia")])
+def test_native_setup_is_generated_without_account_access(mounted, voice, expected_voice):
     client, _, _ = mounted
     assert {item["id"] for item in client.get("/api/native-agents").json()} == {"hermes", "openclaw"}
-    result = client.post("/api/native-agents/hermes/setup", json={"voice": "gosia"})
+    result = client.post("/api/native-agents/hermes/setup", json={"voice": voice} if voice else {})
     assert result.status_code == 200
     assert result.json()["connection_status"] == "not_checked"
+    assert result.json()["config"]["tts"]["openai"]["voice"] == expected_voice
     assert result.json()["config"]["stt"]["openai"]["base_url"] == "http://127.0.0.1:8765/v1"
     assert client.post("/api/native-agents/hermes/setup", json={"base_url": "https://evil.example/v1"}).status_code == 400
 
@@ -250,3 +252,13 @@ def test_webhook_info_rejects_bad_or_unencrypted_urls(mounted, value):
     assert client.post(f"/api/channels/{channel_id}/webhook-info", json={
         "public_base_url": value,
     }).status_code == 400
+
+
+@pytest.mark.parametrize("agent", ["hermes", "openclaw"])
+def test_native_setup_http_accepts_english_voice_and_rejects_unknown(mounted, agent):
+    client, _, _ = mounted
+    endpoint = f"/api/native-agents/{agent}/setup"
+    response = client.post(endpoint, json={"voice": "sophie"})
+    assert response.status_code == 200
+    assert response.json()["voice"] == "sophie"
+    assert client.post(endpoint, json={"voice": "unknown-voice"}).status_code == 400

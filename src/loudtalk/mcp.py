@@ -239,7 +239,7 @@ def build_server(
         title="Synthesize speech",
         annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False),
     )
-    async def synthesize_speech(text: str, voice: str = "gosia") -> dict[str, Any]:
+    async def synthesize_speech(text: str, voice: str = "sophie") -> dict[str, Any]:
         """Create a real WAV file with Loudkit; returns audio_id, duration and audio_url.
 
         This does not send a message. Use send_voice_message to speak in the app.

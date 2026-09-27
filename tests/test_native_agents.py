@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from loudtalk.native_agents import build_native_agent_setup, native_agent_catalog
+from loudtalk.speech import available_voices
 
 
 def test_hermes_scopes_routes_to_audio_and_disables_managed_gateway():
@@ -35,7 +36,7 @@ def test_openclaw_audio_profile_never_changes_text_model_credentials():
     assert media["models"][0]["model"] == "parakeet"
     tts = config["tts"]
     assert tts["auto"] == "inbound"
-    assert tts["providers"]["openai"]["voice"] == "gosia"
+    assert tts["providers"]["openai"]["voice"] == "sophie"
     assert tts["providers"]["openai"]["baseUrl"] == media["models"][0]["baseUrl"]
     assert "responseFormat" not in tts["providers"]["openai"]  # Channel selects Opus or MP3.
     assert any("paste-api-key" in step for step in setup["steps"])
@@ -103,3 +104,17 @@ def test_catalog_and_setups_are_independent_values():
     fresh = build_native_agent_setup("hermes")
     assert fresh["channels"][0]["automatic_reply"] is True
     assert fresh["sources"]
+
+
+@pytest.mark.parametrize("agent", ["hermes", "openclaw"])
+@pytest.mark.parametrize("voice", [item["id"] for item in available_voices()])
+def test_native_setup_preserves_every_available_voice(agent, voice):
+    setup = build_native_agent_setup(agent, voice)
+    tts = setup["config"]["tts"]
+    provider = tts["openai"] if agent == "hermes" else tts["providers"]["openai"]
+    assert setup["voice"] == provider["voice"] == voice
+
+
+@pytest.mark.parametrize("agent", ["hermes", "openclaw"])
+def test_new_native_setup_defaults_to_english_voice(agent):
+    assert build_native_agent_setup(agent)["voice"] == "sophie"

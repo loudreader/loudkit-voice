@@ -14,5 +14,5 @@ tts:
     base_url: "http://127.0.0.1:8765/v1"
     api_key: "loudtalk-local"
     model: "loudkit"
-    voice: "gosia"
+    voice: "sophie"
     speed: 1.0

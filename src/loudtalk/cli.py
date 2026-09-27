@@ -46,7 +46,7 @@ def main():
     transcribe.add_argument("file", type=Path)
     speak = sub.add_parser("speak", help="Wygeneruj plik mowy")
     speak.add_argument("text")
-    speak.add_argument("--voice", default="gosia")
+    speak.add_argument("--voice", default="sophie")
     args = parser.parse_args()
     if args.command == "serve":
         if (

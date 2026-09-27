@@ -155,7 +155,7 @@ def test_record_edit_send_and_receive_agent_voice(running):
     assert reply["text"] == "Odpowiedź agenta."
     assert reply["role"] == "assistant"
     assert_wav(client.get(reply["audio_url"]))
-    assert speech.synthesis_calls == [("Odpowiedź agenta.", "gosia")]
+    assert speech.synthesis_calls == [("Odpowiedź agenta.", "sophie")]
     assert client.get("/api/agents/hermes/inbox").json() == [message]
     assert [m["role"] for m in client.get(messages_url).json()] == ["user", "assistant"]
     assert (
@@ -219,7 +219,8 @@ def test_secrets_stay_out_of_public_responses_and_survive_partial_update(running
 
 def test_conversations_messages_audio_and_agent_configuration_survive_restart(tmp_path):
     with TestClient(server.create_app(tmp_path, FakeSpeech(tmp_path))) as client:
-        agent = create_agent(client, name="Durable Agent", api_key="durable-test-key")
+        agent = create_agent(client, name="Durable Agent", api_key="durable-test-key", voice="gosia")
+        assert client.patch("/api/agents/hermes", json={"voice": "gosia"}).status_code == 200
         conversation = create_conversation(client, agent["id"])
         sent = client.post(
             f"/api/conversations/{conversation['id']}/messages", json={"text": "Remember me"}
@@ -236,6 +237,8 @@ def test_conversations_messages_audio_and_agent_configuration_survive_restart(tm
         bootstrap = restarted.get("/api/bootstrap").json()
         saved = next(a for a in bootstrap["agents"] if a["id"] == agent["id"])
         assert saved["name"] == "Durable Agent" and saved["has_api_key"]
+        assert saved["voice"] == "gosia"
+        assert next(a for a in bootstrap["agents"] if a["id"] == "hermes")["voice"] == "gosia"
         assert restarted.get(f"/api/conversations/{conversation['id']}/messages").json() == [
             sent,
             reply,
@@ -269,7 +272,7 @@ def test_retry_tts_failure_reuses_generated_text(running, monkeypatch):
     assert reply["error"] is None
     assert len(calls) == 1
     assert [m["content"] for m in calls[0][1]] == ["Hello"]
-    assert speech.synthesis_calls == [("Generated only once.", "gosia")] * 2
+    assert speech.synthesis_calls == [("Generated only once.", "sophie")] * 2
     assert_wav(client.get(reply["audio_url"]))
     assert client.post(f"/api/messages/{reply['id']}/retry").status_code == 409
 
@@ -347,15 +350,17 @@ async def test_concurrent_sends_are_rejected_while_one_reply_is_pending(tmp_path
             assert messages[-1]["status"] == "ready"
 
 
-def test_openai_speech_returns_downloadable_wav(running):
+@pytest.mark.parametrize("voice, expected_voice", [(None, "sophie"), ("joe", "joe")])
+def test_openai_speech_returns_downloadable_wav(running, voice, expected_voice):
     client, _, speech = running
     response = client.post(
         "/v1/audio/speech",
-        json={"input": "Read this", "voice": "joe", "model": "loudkit", "response_format": "wav"},
+        json={"input": "Read this", "model": "loudkit", "response_format": "wav",
+              **({"voice": voice} if voice is not None else {})},
     )
     assert_wav(response)
     assert "speech.wav" in response.headers["content-disposition"]
-    assert speech.synthesis_calls == [("Read this", "joe")]
+    assert speech.synthesis_calls == [("Read this", expected_voice)]
     assert (
         client.post(
             "/v1/audio/speech", json={"input": "Hello", "response_format": "ogg"}
@@ -551,7 +556,7 @@ def test_automatic_reply_uses_real_dispatch_with_transcript_and_history(running,
         assert second_payload["text"] == "Pamiętasz poprzednią wiadomość?"
         assert first_payload["messages"] == expected_first
         assert second_payload["messages"] == expected_history
-    assert speech.synthesis_calls == [(text, "gosia") for text in expected_replies]
+    assert speech.synthesis_calls == [(text, "sophie") for text in expected_replies]
 
 
 @pytest.mark.parametrize("invalid_body", [b'{"name":', b"[", b"\xff", b"null", b"[]"])

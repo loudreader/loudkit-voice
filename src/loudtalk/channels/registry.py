@@ -26,14 +26,14 @@ _CATALOG = [
         name="Telegram",
         mode="polling",
         voice_note=True,
-        description="Głosówki przez własnego bota. Działa bez publicznego adresu serwera.",
+        description="Voice messages through your own bot. No public server address needed.",
         docs="/docs/channels/telegram.md",
         fields=[
             _field(
                 "bot_token",
-                "Token bota z BotFather",
+                "Bot token from BotFather",
                 secret=True,
-                help="Użyj osobnego bota albo podłącz silniki do istniejącego Hermesa/OpenClaw.",
+                help="Use a separate bot, or connect the speech engines to your existing Hermes/OpenClaw agent.",
             ),
         ],
     ),
@@ -42,24 +42,24 @@ _CATALOG = [
         name="iMessage",
         mode="webhook",
         voice_note=False,
-        description="Przez BlueBubbles na Macu zalogowanym na konto iMessage agenta.",
+        description="Through BlueBubbles on a Mac signed in to the agent’s iMessage account.",
         docs="/docs/channels/imessage.md",
         fields=[
-            _field("server_url", "Adres BlueBubbles", default="http://127.0.0.1:1234"),
-            _field("password", "Hasło BlueBubbles", secret=True),
+            _field("server_url", "BlueBubbles address", default="http://127.0.0.1:1234"),
+            _field("password", "BlueBubbles password", secret=True),
             _field(
                 "webhook_secret",
-                "Własny token webhooka",
+                "Your webhook token",
                 secret=True,
-                help="Losowy sekret o długości co najmniej 32 znaków.",
+                help="A random secret with at least 32 characters.",
             ),
             _field(
                 "native_audio_message",
-                "Natywna głosówka (Private API)",
+                "Native voice message (Private API)",
                 type="checkbox",
                 required=False,
                 default=False,
-                help="Domyślnie odsyłamy odtwarzalny plik M4A. Wymaga działającego Private API.",
+                help="The default is a playable M4A file. Native voice messages require the Private API.",
             ),
         ],
     ),
@@ -68,14 +68,14 @@ _CATALOG = [
         name="WhatsApp",
         mode="webhook",
         voice_note=True,
-        description="Głosówki przez WhatsApp Business Cloud API i podpisany webhook.",
+        description="Voice messages through WhatsApp Business Cloud API and a signed webhook.",
         docs="/docs/channels/whatsapp.md",
         fields=[
             _field("phone_number_id", "Phone Number ID"),
-            _field("access_token", "Token dostępu Meta", secret=True),
+            _field("access_token", "Meta access token", secret=True),
             _field("app_secret", "App Secret", secret=True),
-            _field("verify_token", "Własny token weryfikacji", secret=True),
-            _field("graph_version", "Wersja Graph API", required=False, default="v24.0"),
+            _field("verify_token", "Your verification token", secret=True),
+            _field("graph_version", "Graph API version", required=False, default="v24.0"),
         ],
     ),
     dict(
@@ -83,17 +83,17 @@ _CATALOG = [
         name="Discord",
         mode="gateway",
         voice_note=True,
-        description="Natywne głosówki w rozmowie z botem lub wybranym kanale serwera.",
+        description="Native voice messages in a bot chat or a selected server channel.",
         docs="/docs/channels/discord.md",
         fields=[
-            _field("bot_token", "Token bota Discord", secret=True),
+            _field("bot_token", "Discord bot token", secret=True),
             _field(
                 "guild_messages",
-                "Odbieraj na serwerach",
+                "Receive messages on servers",
                 type="checkbox",
                 required=False,
                 default=False,
-                help="Wymaga Message Content Intent. Domyślnie tylko prywatne wiadomości.",
+                help="Requires Message Content Intent. Only direct messages are enabled by default.",
             ),
         ],
     ),
@@ -102,7 +102,7 @@ _CATALOG = [
         name="Slack",
         mode="webhook",
         voice_note=False,
-        description="Odbiera nagranie i odpowiada plikiem MP3 w tym samym wątku.",
+        description="Receives a recording and replies with an MP3 file in the same thread.",
         docs="/docs/channels/slack.md",
         fields=[
             _field("bot_token", "Bot User OAuth Token", secret=True),
@@ -123,33 +123,33 @@ def validate_channel_config(config: dict) -> dict:
     item = copy.deepcopy(config)
     platform = next((p for p in _CATALOG if p["id"] == item.get("platform")), None)
     if platform is None:
-        raise ValueError("Wybierz komunikator z listy.")
+        raise ValueError("Choose a messenger from the list.")
     name = item.get("name", platform["name"])
     if not isinstance(name, str) or not name.strip() or len(name.strip()) > 100:
-        raise ValueError("Podaj nazwę połączenia (do 100 znaków).")
+        raise ValueError("Enter a connection name (up to 100 characters).")
     item["name"] = name.strip()
     if not isinstance(item.get("agent_id"), str) or not item["agent_id"]:
-        raise ValueError("Wybierz swojego agenta.")
+        raise ValueError("Choose your agent.")
     for group in ("settings", "secrets"):
         values = item.setdefault(group, {})
         if not isinstance(values, dict):
-            raise ValueError("Nieprawidłowe ustawienia połączenia.")
+            raise ValueError("Invalid connection settings.")
         fields = {f["key"]: f for f in platform["fields"] if f["secret"] == (group == "secrets")}
         if set(values) - set(fields):
-            raise ValueError("Nieznane ustawienie połączenia.")
+            raise ValueError("Unknown connection setting.")
         for key, field in fields.items():
             value = values.get(key, field["default"])
             if value is None:
                 value = ""
             if field["type"] == "checkbox":
                 if not isinstance(value, bool):
-                    raise ValueError(f"{field['label']}: wybierz tak lub nie.")
+                    raise ValueError(f"{field['label']}: choose yes or no.")
             elif not isinstance(value, str) or len(value) > 8192:
-                raise ValueError(f"{field['label']}: nieprawidłowa wartość.")
+                raise ValueError(f"{field['label']}: invalid value.")
             else:
                 value = value.strip()
             if field["required"] and not value:
-                raise ValueError(f"Uzupełnij: {field['label']}.")
+                raise ValueError(f"Required: {field['label']}.")
             values[key] = value
     for key in ("allowed_senders", "allowed_chats"):
         values = item.setdefault(key, [])
@@ -158,14 +158,14 @@ def validate_channel_config(config: dict) -> dict:
             or len(values) > 1000
             or any(not isinstance(v, str) or not v or len(v) > 1000 for v in values)
         ):
-            raise ValueError("Nieprawidłowa lista dozwolonych rozmówców.")
+            raise ValueError("Invalid list of allowed contacts.")
     if item["platform"] == "imessage" and len(item["secrets"]["webhook_secret"]) < 32:
-        raise ValueError("Token webhooka musi mieć co najmniej 32 znaki.")
+        raise ValueError("The webhook token must have at least 32 characters.")
     if item["platform"] == "whatsapp":
         if not item["settings"]["phone_number_id"].isdigit():
-            raise ValueError("Phone Number ID powinien zawierać tylko cyfry.")
+            raise ValueError("Phone Number ID must contain digits only.")
         if not re.fullmatch(r"v\d+\.0", item["settings"]["graph_version"]):
-            raise ValueError("Wersja Graph API powinna wyglądać np. v24.0.")
+            raise ValueError("Use a Graph API version such as v24.0.")
     return item
 
 
@@ -191,4 +191,4 @@ def create_adapter(config: dict):
         from .slack import SlackAdapter
 
         return SlackAdapter(config)
-    raise ChannelError("Ten komunikator nie ma adaptera.")
+    raise ChannelError("No adapter is available for this messenger.")

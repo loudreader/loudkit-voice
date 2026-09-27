@@ -765,7 +765,7 @@ class ChannelManager:
             self._update_event(record["id"], reply=reply.strip(), stage="synthesis")
             stage = "synthesis"
             audio = await asyncio.to_thread(
-                self.speech.synthesize, reply.strip(), agent.get("voice", "gosia")
+                self.speech.synthesize, reply.strip(), agent.get("voice", "sophie")
             )
             self.store.update_message(
                 reply_message["id"],

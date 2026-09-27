@@ -30,8 +30,8 @@ cd loudkit-voice
 The launcher installs pinned public dependencies and opens
 **http://127.0.0.1:8765**. It does not need a checkout of Loudkit next to it.
 The runtime command and Python package retain the name **`loudtalk`** for
-compatibility. The setup panel and some detailed guides currently use Polish;
-this README and the agent instructions are in English.
+compatibility. The setup panel, this README and the agent instructions are in English.
+Some detailed legacy guides currently use Polish.
 
 Keep the server running. In another terminal, from the same directory:
 
@@ -123,7 +123,7 @@ approvals or configure accounts on its own.
 
 ## What has been tested
 
-The standalone release passed 338 automated protocol and routing tests with
+The standalone release passes its automated protocol and routing tests with
 public PyPI dependencies. A fresh install of Loudkit 0.1.1 generated real Sophie
 audio, and Parakeet transcribed it back to the exact English input; see the
 [public dependency smoke result](docs/evidence/public-install-smoke.json).
