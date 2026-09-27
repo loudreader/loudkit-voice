@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-09-22T07:44:16.503479+00:00",
+  "scope": "Hermes and OpenClaw pinned upstream speech-provider functions against real local LoudTalk models; not full agents or messaging delivery",
+  "provider_contracts_passed": true,
+  "cross_agent_transcription": {
+    "expected": "Jutro rano przypomnij mi o spotkaniu z zespołem.",
+    "hermes": "Jutro rano przypomnij mi o spotkaniu z zespołem.",
+    "openclaw": "Jutro rano przypomnij mi o spotkaniu z zespołem.",
+    "exact_match": true
+  },
+  "known_quality_failure": {
+    "spoken": "Dzień dobry.",
+    "transcribed": "Джейн Добри.",
+    "passed": false
+  },
+  "evidence_files": [
+    "hermes-native-provider.json",
+    "openclaw-native-provider.json",
+    "hermes-short-polish-utterance.json"
+  ],
+  "not_tested": [
+    "Full Hermes/OpenClaw processes and configuration loading",
+    "Messaging account delivery",
+    "Other agent implementations"
+  ]
+}

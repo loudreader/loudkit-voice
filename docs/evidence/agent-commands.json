@@ -1,0 +1,147 @@
+{
+  "checked_at": "2026-09-22T07:39:42.867066+00:00",
+  "mode": "reply_smoke",
+  "scope": "Installed CLI interface/auth and optional text reply; no messenger accounts or audio",
+  "agents": [
+    {
+      "agent_id": "codex",
+      "installed": true,
+      "version": "0.153.0",
+      "version_probe": {
+        "status": "ok",
+        "returncode": 0
+      },
+      "interface": {
+        "status": "documented_flags_present",
+        "probe_argv": [
+          "codex",
+          "exec",
+          "--help"
+        ],
+        "required_flags_present": {
+          "exec": true,
+          "[PROMPT]": true
+        },
+        "returncode": 0
+      },
+      "auth": {
+        "status": "configured"
+      },
+      "status": "interface_checked",
+      "smoke": {
+        "status": "passed",
+        "expected_reply": "LOUDTALK_AGENT_OK",
+        "matched": true,
+        "reply_sha256": "593d55f94584ef3ae80dfebcd4cac58006710ec22c0e6b7e6fe8c2955682b512",
+        "through_loudtalk_dispatch": true
+      }
+    },
+    {
+      "agent_id": "claude",
+      "installed": true,
+      "version": "2.1.268",
+      "version_probe": {
+        "status": "ok",
+        "returncode": 0
+      },
+      "interface": {
+        "status": "documented_flags_present",
+        "probe_argv": [
+          "claude",
+          "--help"
+        ],
+        "required_flags_present": {
+          "--print": true,
+          "--output-format": true
+        },
+        "returncode": 0
+      },
+      "auth": {
+        "status": "authentication_required"
+      },
+      "status": "interface_checked",
+      "smoke": {
+        "status": "authentication_required"
+      }
+    },
+    {
+      "agent_id": "gemini",
+      "installed": true,
+      "version": "0.31.0",
+      "version_probe": {
+        "status": "ok",
+        "returncode": 0
+      },
+      "interface": {
+        "status": "documented_flags_present",
+        "probe_argv": [
+          "gemini",
+          "--help"
+        ],
+        "required_flags_present": {
+          "--prompt": true,
+          "--output-format": true
+        },
+        "returncode": 0
+      },
+      "auth": {
+        "status": "not_inspected"
+      },
+      "status": "interface_checked",
+      "smoke": {
+        "status": "command_failed",
+        "through_loudtalk_dispatch": true
+      },
+      "followup_diagnostic": {
+        "verification": "Separate completed real CLI probe; fixed-code summary, no raw account logs retained",
+        "error_type": "IneligibleTierError",
+        "reason_code": "UNSUPPORTED_CLIENT",
+        "meaning": "Existing cached credentials were loaded; this client is unsupported for the account tier."
+      }
+    },
+    {
+      "agent_id": "opencode",
+      "installed": true,
+      "version": "1.18.30",
+      "version_probe": {
+        "status": "ok",
+        "returncode": 0
+      },
+      "interface": {
+        "status": "documented_flags_present",
+        "probe_argv": [
+          "opencode",
+          "run",
+          "--help"
+        ],
+        "required_flags_present": {
+          "--format": true,
+          "message": true
+        },
+        "returncode": 0
+      },
+      "auth": {
+        "status": "configured"
+      },
+      "status": "interface_checked",
+      "smoke": {
+        "status": "command_failed",
+        "through_loudtalk_dispatch": true
+      },
+      "followup_diagnostic": {
+        "verification": "Separate completed real CLI probe; fixed-code summary, no raw account logs retained",
+        "event_type": "error",
+        "error_name": "UnknownError",
+        "message": "Unexpected server error. Check server logs for details."
+      }
+    },
+    {
+      "agent_id": "muse",
+      "installed": false,
+      "status": "not_installed",
+      "smoke": {
+        "status": "not_installed"
+      }
+    }
+  ]
+}

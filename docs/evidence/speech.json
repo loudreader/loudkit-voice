@@ -1,0 +1,44 @@
+{
+  "prepare_seconds": 6.79,
+  "clips": [
+    {
+      "voice": "gosia",
+      "input": "Cześć, to jest wiadomość głosowa. Powiedz mi, jaki mamy plan na jutro.",
+      "transcript": "Cześć, to jest wiadomość głosowa, powiedz mi, jaki mamy plan na jutro?",
+      "duration": 4.8,
+      "rms": 0.06841690373871923,
+      "tts_seconds": 2.01,
+      "stt_seconds": 2.36,
+      "audio": "/private/tmp/loudtalk-speech-smoke/audio/b07af1e42b4540c395ba76ae79e4423d.wav",
+      "browser_audio": "/private/tmp/loudtalk-speech-smoke/gosia-browser.webm"
+    },
+    {
+      "voice": "joe",
+      "input": "Hello, this is a voice message. Please tell me the plan for tomorrow.",
+      "transcript": "Hello, this is a voice message. Please tell me the plan for tomorrow.",
+      "duration": 3.8,
+      "rms": 0.05378740447660749,
+      "tts_seconds": 3.61,
+      "stt_seconds": 1.17,
+      "audio": "/private/tmp/loudtalk-speech-smoke/audio/2ea9dc0310a64210a1d0168f3c1c9879.wav",
+      "browser_audio": "/private/tmp/loudtalk-speech-smoke/joe-browser.webm"
+    }
+  ],
+  "rejected": [
+    "path traversal",
+    "empty text",
+    "unknown voice",
+    "audio > 180 seconds"
+  ],
+  "status": {
+    "tts": {
+      "state": "ready",
+      "error": null
+    },
+    "stt": {
+      "state": "ready",
+      "error": null
+    },
+    "preparing": false
+  }
+}

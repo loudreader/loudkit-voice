@@ -1,0 +1,5 @@
+mcp_servers:
+  loudtalk:
+    command: loudtalk
+    args: [mcp]
+    timeout: 180

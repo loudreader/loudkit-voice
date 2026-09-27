@@ -1,0 +1,21 @@
+{
+  "source": "fresh public PyPI dependencies and existing public model snapshot cache in offline mode",
+  "loudkit": "0.1.1",
+  "parakeet_mlx": "0.5.2",
+  "voice": "sophie",
+  "input": "Hello, this is a voice message. Please tell me the plan for tomorrow.",
+  "transcript": "Hello, this is a voice message. Please tell me the plan for tomorrow.",
+  "duration": 4.68,
+  "elapsed_seconds": 16.79,
+  "status": {
+    "tts": {
+      "state": "ready",
+      "error": null
+    },
+    "stt": {
+      "state": "ready",
+      "error": null
+    },
+    "preparing": false
+  }
+}

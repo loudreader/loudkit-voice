@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "loudtalk": {
+      "type": "stdio",
+      "command": "loudtalk",
+      "args": ["mcp"]
+    }
+  }
+}

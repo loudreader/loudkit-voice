@@ -1,0 +1,80 @@
+{
+  "passed": true,
+  "transport_passed": true,
+  "transcript_matches_spoken_text": true,
+  "spoken_text": "Jutro rano przypomnij mi o spotkaniu z zespołem.",
+  "checked_at": "2026-09-22T07:39:17.121847+00:00",
+  "agent": "hermes",
+  "scope": "Pinned upstream provider functions + real OpenAI SDK + local HTTP + real speech codecs/transcription",
+  "not_tested": [
+    "Hermes gateway startup",
+    "profile file loading",
+    "messenger delivery"
+  ],
+  "dependency_seams": [
+    "profile/config helpers",
+    "unused managed/cloud providers",
+    "STT result envelope"
+  ],
+  "base_url": "http://127.0.0.1:8765/v1",
+  "openai_sdk": "2.54.0",
+  "source_commit": "969872ebaa1453f877523adc8aa8c6f69b24cbe3",
+  "sources": {
+    "transcription_cloud.py": {
+      "sha256": "956360841aed2e8723c20fbcfa8676feaa7d813ac32fb4b74688c3f87f256992",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/969872ebaa1453f877523adc8aa8c6f69b24cbe3/tools/transcription_cloud.py"
+    },
+    "tts_tool_openai.py": {
+      "sha256": "9a2dfa0c5f7564e7ec796636ed0fce69896bbc9a7fbf14c0081267a880206874",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/969872ebaa1453f877523adc8aa8c6f69b24cbe3/tools/tts_tool_openai.py"
+    },
+    "tts_tool_providers.py": {
+      "sha256": "b01b253e4887aa16d063b684d2cb3c7caf2b6655d69e9187c9c52d448ca7c740",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/969872ebaa1453f877523adc8aa8c6f69b24cbe3/tools/tts_tool_providers.py"
+    }
+  },
+  "results": [
+    {
+      "kind": "tts",
+      "response_format": "opus",
+      "audio": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "opus",
+            "sample_rate": "48000"
+          }
+        ],
+        "format": {
+          "duration": "3.326500"
+        }
+      },
+      "output_bytes": 19046
+    },
+    {
+      "kind": "tts",
+      "response_format": "mp3",
+      "audio": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "mp3",
+            "sample_rate": "24000"
+          }
+        ],
+        "format": {
+          "duration": "3.320000"
+        }
+      },
+      "output_bytes": 54572
+    },
+    {
+      "kind": "stt",
+      "input_format": "ogg/opus",
+      "model": "parakeet",
+      "text": "Jutro rano przypomnij mi o spotkaniu z zespołem."
+    }
+  ]
+}

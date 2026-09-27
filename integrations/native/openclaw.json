@@ -1,0 +1,37 @@
+{
+  "tools": {
+    "media": {
+      "models": [
+        {
+          "provider": "openai",
+          "model": "parakeet",
+          "profile": "openai:loudtalk",
+          "baseUrl": "http://127.0.0.1:8765/v1",
+          "capabilities": [
+            "audio"
+          ],
+          "timeoutSeconds": 300
+        }
+      ],
+      "audio": {
+        "enabled": true
+      }
+    }
+  },
+  "tts": {
+    "auto": "inbound",
+    "provider": "openai",
+    "timeoutMs": 300000,
+    "modelOverrides": {
+      "enabled": false
+    },
+    "providers": {
+      "openai": {
+        "baseUrl": "http://127.0.0.1:8765/v1",
+        "apiKey": "loudtalk-local",
+        "model": "loudkit",
+        "voice": "gosia"
+      }
+    }
+  }
+}

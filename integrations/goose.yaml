@@ -1,0 +1,8 @@
+extensions:
+  loudtalk:
+    name: LoudTalk
+    cmd: loudtalk
+    args: [mcp]
+    enabled: true
+    type: stdio
+    timeout: 180

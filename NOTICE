@@ -1,0 +1,24 @@
+Loudkit Voice
+Copyright 2026 LoudReader
+
+The Python package and command retain the name LoudTalk for compatibility.
+
+This project uses separately distributed open-source dependencies, including
+Loudkit, Parakeet MLX, FastAPI, and the MCP Python SDK. Those projects and the
+downloaded speech model weights retain their own licenses and notices.
+Model weights, user recordings, credentials, and third-party agent code are not
+included in this repository.
+
+Default speech models (downloaded separately):
+
+- LoudReader Loudr-1 Turbo: https://huggingface.co/loudreader/loudr-1-turbo
+  Apache-2.0.
+- Parakeet TDT 0.6B v3, MLX conversion by mlx-community:
+  https://huggingface.co/mlx-community/parakeet-tdt-0.6b-v3
+  CC-BY-4.0: https://creativecommons.org/licenses/by/4.0/
+  Based on NVIDIA Parakeet TDT 0.6B v3:
+  https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3
+  Consult the model cards for authorship, conversion details, and model terms.
+
+The bundled skills/loudkit-voice instructions are separately licensed MIT-0;
+see skills/loudkit-voice/LICENSE.

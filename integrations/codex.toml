@@ -1,0 +1,4 @@
+[mcp_servers.loudtalk]
+command = "loudtalk"
+args = ["mcp"]
+tool_timeout_sec = 180

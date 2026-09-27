@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5ef">
+  <meta name="description" content="LoudTalk — głosówki dla Twoich agentów. Mów, sprawdź i wyślij. Lokalnie.">
+  <title>LoudTalk — głosówki dla agentów</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/playground.css">
+  <script src="/static/playground.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Przejdź do rozmowy</a>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Agenci i rozmowy">
+      <a class="brand" href="/" aria-label="LoudTalk, strona główna"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>LoudTalk</a>
+      <p class="brand-caption">Wielkie myśli. Krótkie głosówki.</p>
+      <button class="new-conversation" id="new-conversation"><span data-icon="plus"></span>Nowa rozmowa <span class="new-arrow" aria-hidden="true">↗</span></button>
+      <div class="section-heading"><h2>Twoi agenci</h2><button class="icon-button" id="add-agent" aria-label="Dodaj agenta" title="Dodaj agenta"><span data-icon="plus"></span></button></div>
+      <nav id="agent-list" class="agent-list" aria-label="Wybierz agenta"></nav>
+      <div class="section-heading conversations-heading"><h2>Rozmowy</h2><span id="conversation-count" class="count">0</span></div>
+      <nav id="conversation-list" class="conversation-list" aria-label="Historia rozmów"><p class="sidebar-empty">Tu pojawią się Twoje rozmowy.</p></nav>
+      <div class="sidebar-bottom">
+        <div class="local-note"><span class="local-dot" aria-hidden="true"></span><span>Głos przetwarzany u Ciebie<small>Transkrypcja i synteza lokalnie</small></span></div>
+        <button class="sidebar-settings" id="open-settings"><span data-icon="sliders"></span>Ustawienia połączenia<span aria-hidden="true">↗</span></button>
+      </div>
+    </aside>
+    <div class="sidebar-shade" id="sidebar-shade" hidden></div>
+    <main id="main" class="main-area" tabindex="-1">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menu-button" aria-label="Otwórz menu" aria-expanded="false"><span data-icon="menu"></span></button>
+        <div class="conversation-heading"><span class="eyebrow">TWOJA PRZESTRZEŃ GŁOSU</span><div class="current-agent"><span class="tiny-avatar" id="current-avatar">L</span><span id="current-agent-name">Wybierz agenta</span><span class="connection-kind" id="current-agent-kind"></span></div></div>
+        <div class="topbar-actions"><button class="engine-status" id="engine-status" title="Przygotowanie modeli"><span class="status-dot"></span><span id="engine-status-label">Sprawdzam modele…</span></button><button class="icon-button" id="conversation-menu" aria-label="Usuń bieżącą rozmowę" title="Usuń rozmowę" hidden><span data-icon="trash"></span></button></div>
+      </header>
+
+      <section class="engine-panel" id="engine-panel" aria-labelledby="engine-title" hidden>
+        <div class="engine-icon"><span data-icon="sparkles"></span></div><div class="engine-copy"><h2 id="engine-title">Jeszcze chwila i możemy rozmawiać</h2><p id="engine-description">Pobierz lokalne modele głosu: Parakeet rozpozna Twoje słowa, a LoudKit przeczyta odpowiedź. To jednorazowy krok.</p><div class="engine-chips"><span id="stt-chip">Parakeet · transkrypcja</span><span id="tts-chip">LoudKit · głos</span></div></div><button class="button button-dark" id="prepare-engines">Przygotuj głos <span data-icon="download"></span></button><button class="icon-button panel-close" id="close-engine-panel" aria-label="Zwiń panel modeli"><span data-icon="close"></span></button>
+      </section>
+
+      <div class="conversation-space" id="conversation-space">
+        <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+          <span class="welcome-tag"><span class="small-wave" aria-hidden="true">ııı</span> Dobrze Cię słyszeć</span>
+          <h1 id="welcome-title">Mniej pisania.<br><span>Więcej rozmowy.</span></h1>
+          <p class="welcome-description" id="welcome-description">Złap myśl, zanim ucieknie.<br>Nagraj wiadomość dla swojego agenta.</p>
+          <div class="welcome-note"><span data-icon="check"></span> Odsłuchaj i sprawdź tekst przed wysłaniem</div>
+        </section>
+        <div class="inbox-connection-note" id="inbox-connection-note" hidden><span data-icon="inbox"></span><p>Skrzynka czeka na agenta.<br><span>Połącz przez MCP, aby odbierał wiadomości.</span></p><button class="text-link" id="connect-inbox-first">Połącz agenta <span aria-hidden="true">↗</span></button></div>
+        <section class="messages" id="messages" role="log" aria-label="Wiadomości" aria-live="polite" aria-relevant="additions" hidden></section>
+        <div class="waiting-note" id="inbox-note" hidden><span data-icon="inbox"></span><p>Wiadomość czeka w skrzynce.<br>Poproś aktywnego agenta, żeby ją odebrał. <button class="text-link" id="connect-inbox">Konfiguracja MCP</button></p></div>
+      </div>
+
+      <section class="composer" id="composer" aria-label="Nowa wiadomość">
+        <div class="preview-panel" id="preview-panel" hidden>
+          <div class="preview-heading"><div><span class="eyebrow">ZANIM WYŚLESZ</span><h2>Brzmi jak Ty.</h2></div><button class="icon-button" id="discard-draft" aria-label="Odrzuć nagranie"><span data-icon="close"></span></button></div>
+          <audio controls id="draft-audio" preload="metadata" aria-label="Odsłuchaj swoje nagranie"></audio>
+          <label for="draft-text" class="field-label">Twoje słowa <span>Możesz je poprawić</span></label>
+          <textarea id="draft-text" rows="3" maxlength="12000" placeholder="Rozpoznaję Twoje słowa…"></textarea>
+          <p class="inline-status" id="draft-status" role="status"></p>
+          <div class="preview-actions"><button class="button button-subtle" id="retry-transcribe" hidden><span data-icon="refresh"></span>Ponów transkrypcję</button><button class="button button-subtle" id="rerecord"><span data-icon="mic"></span>Nagraj ponownie</button><button class="button button-coral" id="send-draft">Wyślij głosówkę <span data-icon="arrow-up"></span></button></div>
+        </div>
+        <div class="record-stage" id="record-stage">
+          <div class="record-visual" id="record-visual"><span class="orbit orbit-one" aria-hidden="true"></span><span class="orbit orbit-two" aria-hidden="true"></span><canvas id="waveform" width="600" height="120" aria-hidden="true"></canvas><button class="record-button" id="record-button" aria-label="Nagraj wiadomość" aria-keyshortcuts="Space"><span data-icon="mic" id="record-icon"></span></button></div>
+          <div class="record-label" id="record-label">Nagraj wiadomość</div>
+          <div class="record-hint" id="record-hint">Kliknij lub naciśnij <kbd>spację</kbd></div>
+          <div class="composer-alternatives"><button class="quiet-button" id="upload-button"><span data-icon="upload"></span>Dodaj nagranie</button><span class="separator" aria-hidden="true"></span><button class="quiet-button" id="text-toggle" aria-expanded="false" aria-controls="text-composer"><span data-icon="keyboard"></span>Wolę napisać</button></div>
+        </div>
+        <form class="text-composer" id="text-composer" hidden><label for="message-text" class="sr-only">Wiadomość do agenta</label><textarea id="message-text" rows="2" maxlength="12000" placeholder="Co chodzi Ci po głowie?"></textarea><div class="text-composer-footer"><span>⌘ / Ctrl + Enter, aby wysłać</span><button class="button button-coral" id="send-text" type="submit" aria-label="Wyślij wiadomość">Wyślij <span data-icon="arrow-up"></span></button></div></form>
+        <p class="privacy-caption" id="privacy-caption"><span data-icon="shield"></span>Głos przetwarzany lokalnie. Do agenta trafia treść wiadomości.</p>
+      </section>
+      <footer class="main-footer"><span>POWERED BY <strong>LOUDKIT</strong> + PARAKEET</span><span>Z tekstu w rozmowę.<span class="footer-flower" aria-hidden="true">✳</span></span></footer>
+      <div class="drop-zone" id="drop-zone" hidden><span data-icon="upload"></span><h2>Puść głosówkę tutaj</h2><p>Sprawdzisz ją przed wysłaniem.</p></div>
+    </main>
+  </div>
+  <input type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg,.webm,.flac,.mp4" id="audio-file" hidden>
+  <dialog id="agent-dialog" class="agent-dialog" aria-labelledby="agent-dialog-title">
+    <form id="agent-form">
+      <div class="dialog-heading"><span class="eyebrow">DOBRZE SIĘ DOGADACIE</span><button type="button" class="icon-button" id="close-agent-dialog" aria-label="Zamknij"><span data-icon="close"></span></button></div>
+      <h2 id="agent-dialog-title">Daj głos swojemu agentowi.</h2><p class="dialog-intro">Wybierz sposób połączenia. Jeden interfejs dla wszystkich Twoich agentów.</p>
+      <fieldset class="connection-options" id="connection-options"><legend class="sr-only">Sposób połączenia</legend>
+        <label class="connection-option"><input type="radio" name="kind" value="command"><span class="option-symbol" data-icon="terminal"></span><span><strong>Aplikacja na tym Macu</strong><small>Hermes, OpenClaw, Claude Code i inne CLI</small></span><span class="option-check" data-icon="check"></span></label>
+        <label class="connection-option"><input type="radio" name="kind" value="inbox" checked><span class="option-symbol" data-icon="inbox"></span><span><strong>Skrzynka MCP</strong><small>Agent sam odbiera i wysyła głosówki</small></span><span class="option-check" data-icon="check"></span></label>
+        <label class="connection-option"><input type="radio" name="kind" value="openai"><span class="option-symbol" data-icon="sparkles"></span><span><strong>API czatu</strong><small>Endpoint zgodny z OpenAI Chat Completions</small></span><span class="option-check" data-icon="check"></span></label>
+        <label class="connection-option"><input type="radio" name="kind" value="webhook"><span class="option-symbol" data-icon="link"></span><span><strong>Webhook</strong><small>Twój bot, workflow lub własna integracja</small></span><span class="option-check" data-icon="check"></span></label>
+      </fieldset>
+      <div class="form-grid"><div class="form-field"><label for="agent-name">Nazwa agenta</label><input id="agent-name" name="name" placeholder="np. Hermes" required maxlength="60" autocomplete="off"></div><div class="form-field"><label for="agent-voice">Głos odpowiedzi</label><select id="agent-voice" name="voice"></select><button id="preview-voice" type="button" class="voice-preview-button"><span data-icon="volume"></span><span>Posłuchaj głosu</span></button><audio id="voice-preview-audio" controls hidden aria-label="Próbka głosu agenta"></audio></div></div>
+      <div id="command-fields" hidden><div class="form-field"><label for="agent-command">Aplikacja</label><select id="agent-command" name="command_id"></select><p class="field-help">Lista pokazuje dostępność programu na tym komputerze. Zaloguj się wcześniej w jego terminalu.</p></div><div class="form-field"><label for="agent-directory">Folder pracy</label><input id="agent-directory" name="working_directory" placeholder="/Users/…/Developer/projekt" autocomplete="off"></div><p class="command-note">Agent otrzyma Twoją wiadomość i uruchomi się w wybranym folderze z uprawnieniami ustawionymi w jego aplikacji.</p></div>
+      <div id="endpoint-fields" hidden><div class="form-field"><label for="agent-endpoint" id="endpoint-label">Adres API</label><input type="url" id="agent-endpoint" name="endpoint" placeholder="http://localhost:8000/v1/chat/completions" autocomplete="off"><p class="field-help" id="endpoint-help"></p></div><div class="form-grid"><div class="form-field" id="model-field"><label for="agent-model">Model</label><input id="agent-model" name="model" placeholder="Nazwa modelu z Twojego serwera" autocomplete="off"></div><div class="form-field"><label for="agent-api-key">Klucz API <span>opcjonalnie</span></label><input type="password" id="agent-api-key" name="api_key" autocomplete="new-password" placeholder="Klucz zostaje na tym komputerze"></div></div></div>
+      <div class="mcp-setup" id="mcp-setup"><div class="mcp-setup-heading"><span data-icon="terminal"></span><strong>Konfiguracja MCP</strong></div><p>Dodaj ten serwer do konfiguracji MCP swojego agenta. Potem powiedz mu: „Sprawdź moją skrzynkę LoudTalk i odpowiedz głosem”.</p><div class="code-row"><code id="mcp-command"></code><button class="icon-button" id="copy-mcp" type="button" aria-label="Kopiuj konfigurację MCP"><span data-icon="copy"></span></button></div></div>
+      <div id="agent-id-note" class="field-help" hidden><span>Identyfikator skrzynki</span><div class="code-row"><code id="agent-id-value"></code><button class="icon-button" id="copy-agent-id" type="button" aria-label="Kopiuj identyfikator skrzynki"><span data-icon="copy"></span></button></div></div>
+      <p id="agent-form-error" class="form-error" role="alert" hidden></p><div class="dialog-footer"><span id="agent-privacy"><span data-icon="shield"></span>Połączenie pod Twoją kontrolą</span><button type="submit" class="button button-coral" id="save-agent">Dodaj agenta <span data-icon="arrow-right"></span></button></div>
+    </form>
+  </dialog>
+  <dialog id="delete-dialog" class="confirm-dialog" aria-labelledby="delete-title"><h2 id="delete-title">Usunąć tę rozmowę?</h2><p>Wiadomości znikną z historii LoudTalk. Tego nie można cofnąć.</p><div class="dialog-footer"><button class="button button-subtle" id="cancel-delete">Zachowaj</button><button class="button button-coral" id="confirm-delete">Usuń rozmowę</button></div></dialog>
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

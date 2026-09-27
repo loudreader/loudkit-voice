@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "checked_at": "2026-09-22T07:57:33.769275+00:00",
+  "scope": "Real Loudkit input, real Parakeet, production queue and Codex dispatch, real Loudkit response, production Telegram multipart/Opus and real STT recheck",
+  "exclusions": [
+    "Telegram network/account and remote delivery",
+    "Human listening"
+  ],
+  "messenger_transport": "Explicit in-memory HTTP fixture; no Telegram traffic",
+  "agent": "Codex CLI",
+  "input_text": "To jest test rozmowy głosowej. Odpowiedz dokładnie: Słyszę twoją wiadomość i mogę odpowiadać głosem po polsku.",
+  "transcript": "To jest test rozmowy głosowej? Odpowiedz dokładnie, słyszę twoją wiadomość i mogę odpowiadać głosem po polsku.",
+  "agent_reply": "Słyszę twoją wiadomość i mogę odpowiadać głosem po polsku.",
+  "response_transcript": "Słyszę twoją wiadomość i mogę odpowiadać głosem po polsku.",
+  "codec": "opus",
+  "sample_rate": "48000",
+  "duration_seconds": 4.3265,
+  "outgoing_audio_sha256": "ff310f91146e8b5e1402dcf47d7ec6f044d706e970a684b8725a17fe407763a8",
+  "outgoing_bytes": 24935,
+  "outgoing_count": 1,
+  "duplicate_input_ignored": true,
+  "unpaired_input_not_downloaded": true,
+  "same_chat_thread_and_reply_target": true,
+  "elapsed_seconds": 19.54
+}

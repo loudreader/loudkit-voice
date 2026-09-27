@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "verifiedAt": "2026-09-22T07:42:55.844Z",
+  "upstreamRevision": "b068eab40767fc6796899cdc85d08102e8035b2b",
+  "scope": "Pinned upstream OpenClaw speech-provider, config normalizer and TTS request construction executed against real loopback LoudTalk HTTP; actual returned Opus/MP3 probed and fully decoded. Unchanged upstream transcribeOpenAiAudio and transcribeOpenAiCompatibleAudio called real local Parakeet via multipart HTTP and returned nonempty transcript.",
+  "exclusions": [
+    "OpenClaw gateway/global configuration loading",
+    "OpenClaw SDK secret, header, SSRF and media helper implementations (test adapters)",
+    "STT shared multipart/auth/HTTP/JSON helper implementations and context-owned credential resolution (test adapters)",
+    "Messaging account/channel delivery",
+    "Human listening evaluation"
+  ],
+  "baseUrl": "http://127.0.0.1:8765/v1",
+  "text": "Dzień dobry.",
+  "voice": "gosia",
+  "sourceDigests": [
+    {
+      "filename": "openclaw-extensions_openai_tts.ts",
+      "sha256": "87bd798376da60aeda790413f7fc5f40357cdaec17262c017dcf794512594891",
+      "upstreamUrl": "https://raw.githubusercontent.com/openclaw/openclaw/b068eab40767fc6796899cdc85d08102e8035b2b/extensions/openai/tts.ts"
+    },
+    {
+      "filename": "openclaw-extensions_openai_speech-provider.ts",
+      "sha256": "f68963068c723eb325d8159da98733b47b95f236e5de6fbe092d2d6fd35712fd",
+      "upstreamUrl": "https://raw.githubusercontent.com/openclaw/openclaw/b068eab40767fc6796899cdc85d08102e8035b2b/extensions/openai/speech-provider.ts"
+    },
+    {
+      "filename": "openclaw-extensions_openai_realtime-provider-shared.ts",
+      "sha256": "345c4c4656bebf9718542237f7a2a137e25a2b5ae18cdbd1fc02cc1aa5060a47",
+      "upstreamUrl": "https://raw.githubusercontent.com/openclaw/openclaw/b068eab40767fc6796899cdc85d08102e8035b2b/extensions/openai/realtime-provider-shared.ts"
+    },
+    {
+      "filename": "openclaw-extensions_openai_audio-transcription.ts",
+      "sha256": "eae0ad8b79a018f7cb57d92319a326958657204398daa11eb719f4430c7f1597",
+      "upstreamUrl": "https://raw.githubusercontent.com/openclaw/openclaw/b068eab40767fc6796899cdc85d08102e8035b2b/extensions/openai/audio-transcription.ts"
+    },
+    {
+      "filename": "openclaw-src_media-understanding_openai-compatible-audio.ts",
+      "sha256": "bf610529d620fd628e6564727695a9007848f1f179eaf3c53b6b574e54702e61",
+      "upstreamUrl": "https://raw.githubusercontent.com/openclaw/openclaw/b068eab40767fc6796899cdc85d08102e8035b2b/src/media-understanding/openai-compatible-audio.ts"
+    },
+    {
+      "filename": "openclaw-src_media-understanding_openai-audio-api.ts",
+      "sha256": "3789dd7e964ae3a989112375c3f1df689a51c80f33aeb0fde8ef4670daaf5cee",
+      "upstreamUrl": "https://raw.githubusercontent.com/openclaw/openclaw/b068eab40767fc6796899cdc85d08102e8035b2b/src/media-understanding/openai-audio-api.ts"
+    }
+  ],
+  "calls": [
+    {
+      "url": "http://127.0.0.1:8765/v1/audio/speech",
+      "method": "POST",
+      "body": {
+        "model": "loudkit",
+        "input": "Dzień dobry.",
+        "voice": "gosia",
+        "response_format": "opus",
+        "speed": 1
+      },
+      "timeoutMs": 180000,
+      "released": true,
+      "httpStatus": 200,
+      "contentType": "audio/ogg",
+      "elapsedMs": 1203
+    },
+    {
+      "url": "http://127.0.0.1:8765/v1/audio/speech",
+      "method": "POST",
+      "body": {
+        "model": "loudkit",
+        "input": "Dzień dobry.",
+        "voice": "gosia",
+        "response_format": "mp3",
+        "speed": 1
+      },
+      "timeoutMs": 180000,
+      "released": true,
+      "httpStatus": 200,
+      "contentType": "audio/mpeg",
+      "elapsedMs": 985
+    },
+    {
+      "url": "http://127.0.0.1:8765/v1/audio/transcriptions",
+      "method": "POST",
+      "timeoutMs": 180000,
+      "released": true,
+      "multipart": {
+        "model": "parakeet",
+        "fileName": "hermes-reply.ogg",
+        "mime": "audio/ogg",
+        "bytes": 19046
+      },
+      "httpStatus": 200,
+      "contentType": "application/json",
+      "elapsedMs": 470
+    }
+  ],
+  "artifacts": [
+    {
+      "target": "voice-note",
+      "path": "/private/tmp/loudtalk-openclaw-live-stt/openclaw-voice-note.opus",
+      "sha256": "096d2db34da878f9b6684d34038b5d514773d986a8aa15a1f43c3660290ad90d",
+      "bytes": 7945,
+      "codec": "opus",
+      "durationSeconds": 1.5265,
+      "sampleRate": 48000,
+      "channels": 1,
+      "fullyDecoded": true
+    },
+    {
+      "target": "audio-file",
+      "path": "/private/tmp/loudtalk-openclaw-live-stt/openclaw-audio-file.mp3",
+      "sha256": "f8f46c254d1c5a3e276e5c8e3c01fbdfe079319063c50402263328c5577a2b9d",
+      "bytes": 25772,
+      "codec": "mp3",
+      "durationSeconds": 1.52,
+      "sampleRate": 24000,
+      "channels": 1,
+      "fullyDecoded": true
+    }
+  ],
+  "transcription": {
+    "inputPath": "/private/tmp/loudtalk-hermes-live/hermes-reply.ogg",
+    "inputSha256": "90fb5ce1e97eca307a56f5f07e30ad65c615d7e29a3b4b6ca921357b02bb9d84",
+    "inputBytes": 19046,
+    "model": "parakeet",
+    "text": "Jutro rano przypomnij mi o spotkaniu z zespołem.",
+    "transcriptPath": "/private/tmp/loudtalk-openclaw-live-stt/openclaw-transcript.txt",
+    "expectedText": null,
+    "expectedWordsMatch": null
+  }
+}
