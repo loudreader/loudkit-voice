@@ -11,7 +11,18 @@ Your chosen agent/model and messenger providers may have their own costs.
 
 [Product page](https://loudkit.loudreader.io/agents/) ·
 [Agent setup instructions](https://loudkit.loudreader.io/agents/llms.txt) ·
+[Setup skill on ClawHub](https://clawhub.ai/pepinu/skills/loudkit-voice) ·
 [Integration reference](integrations/README.md)
+
+For OpenClaw, install the setup instructions from your agent workspace:
+
+```sh
+npx clawhub@0.23.3 install loudkit-voice --version 0.1.1
+```
+
+The skill helps your agent check compatibility and configure the service below.
+It does not install or start the speech runtime by itself. The same instructions
+are available at [`skills/loudkit-voice/SKILL.md`](skills/loudkit-voice/SKILL.md).
 
 ## Install on a Mac
 

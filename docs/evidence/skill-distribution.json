@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-09-27",
+  "slug": "loudkit-voice",
+  "version": "0.1.1",
+  "publisher": "pepinu",
+  "listing": "https://clawhub.ai/pepinu/skills/loudkit-voice",
+  "cli_version": "0.23.3",
+  "public_listing_http_status": 200,
+  "anonymous_install": "passed",
+  "downloaded_files_match_source": true,
+  "sha256": {
+    "SKILL.md": "7f278b7e3c42fcb3abbaee84ae76ab2603b0c10cf519aa425bef0e0433b78c86",
+    "LICENSE": "98ed3ae5a11f9a3d19483d73f80524684b75cf43f917f3b4cb9d28fbdcf353c4"
+  },
+  "scope": "Distribution of setup instructions only. Does not establish a live agent-messenger voice round trip."
+}
